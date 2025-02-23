@@ -13,10 +13,10 @@ export default function Home() {
             Suivez vos budgets et vos dépenses <br /> en toute simplicité sur notre application !
           </p>
           <div className="flex justify-center items-center">
-            <Link href={""} className="btn btn-sm md:btn-md btn-outline btn-accent">
+            <Link href={"/sign-in"} className="btn btn-sm md:btn-md btn-outline btn-accent">
               Connexion
             </Link>
-            <Link href={""} className="btn btn-sm md:btn-md ml-2 btn-accent">
+            <Link href={"/sign-up"} className="btn btn-sm md:btn-md ml-2 btn-accent">
               Inscription
             </Link>
           </div>
