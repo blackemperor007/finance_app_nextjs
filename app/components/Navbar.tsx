@@ -1,10 +1,17 @@
 "use client"
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useUser, UserButton } from "@clerk/nextjs";
 import Link from 'next/link';
-
+import { checkAndAddUser } from '../actions';
 const Navbar = () => {
     const { isLoaded, isSignedIn, user } = useUser()
+
+    useEffect(() => {
+        if (user?.primaryEmailAddress?.emailAddress) {
+            checkAndAddUser(user.primaryEmailAddress.emailAddress)
+        }
+    }, [user])
+
     return (
         <div className='bg-base-200/30 px-5 md:px-[10%] py-4'>
             {isLoaded && (
@@ -15,17 +22,17 @@ const Navbar = () => {
                                 Cash <span className='text-accent'>.Track</span>
                             </div>
                             <div className="md:flex hidden items-center gap-4">
-                                <Link href="/budgets" className='btn'>Budgets</Link>
-                                <Link href="/budgets" className='btn'>Tableau de bord</Link>
-                                <Link href="/budgets" className='btn'>Transactions</Link>
+                                <Link href={"/budgets"} className='btn'>Budgets</Link>
+                                <Link href={"/dashboard"} className='btn'>Tableau de bord</Link>
+                                <Link href={"/transaction"} className='btn'>Transactions</Link>
                             </div>
                             <UserButton/>
                         </div>
 
                         <div className="md:hidden flex items-center gap-4">
-                                <Link href="/budgets" className='btn btn-sm md:btn-md'>Budgets</Link>
-                                <Link href="/dashboard" className='btn mx-4 btn-sm'>Tableau de bord</Link>
-                                <Link href="/transaction" className='btn btn-sm'>Transactions</Link>
+                                <Link href={"/budgets"} className='btn btn-sm md:btn-md'>Budgets</Link>
+                                <Link href={"/dashboard"} className='btn mx-4 btn-sm'>Tableau de bord</Link>
+                                <Link href={"/transaction"} className='btn btn-sm'>Transactions</Link>
                             </div>
                     </>
                 ) : (
