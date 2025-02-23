@@ -14,17 +14,26 @@ const Navbar = () => {
                             <div className="flex text-2xl items-center font-bold">
                                 Cash <span className='text-accent'>.Track</span>
                             </div>
-                            <div className="flex items-center gap-4">
-                                <Link href="/budgets">Mes budgets</Link>
-                                <UserButton afterSignOutUrl="/"/>
+                            <div className="md:flex hidden items-center gap-4">
+                                <Link href="/budgets" className='btn'>Budgets</Link>
+                                <Link href="/budgets" className='btn'>Tableau de bord</Link>
+                                <Link href="/budgets" className='btn'>Transactions</Link>
                             </div>
+                            <UserButton/>
                         </div>
+
+                        <div className="md:hiddden flex items-center gap-4">
+                                <Link href="/budgets" className='btn btn-sm md:btn-md'>Budgets</Link>
+                                <Link href="/dashboard" className='btn mx-4 btn-sm'>Tableau de bord</Link>
+                                <Link href="/transaction" className='btn btn-sm'>Transactions</Link>
+                            </div>
                     </>
                 ) : (
-                    <div className="flex justify-between items-center">
-                        <div className="flex text-2xl items-center font-bold">
-                            Cash <span className='text-accent'>.Track</span>
-                        </div>
+                    <div>
+                         <div className="md:hiddden flex items-center gap-4">
+                                <Link href={"/sign-in"} className='btn btn-primary'>Connexion</Link>
+                                <Link href={"/sign-up"} className='btn btn-secondary'>Inscription</Link>
+                            </div>
                     </div>
                 ))
             )}
