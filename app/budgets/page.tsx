@@ -7,6 +7,8 @@ import { addBudget, getBudgetsByUser } from '../actions'
 import Notification from '../components/Notification';
 import { Budget } from '@/type';
 import Link from 'next/link';
+import BudgetItems from '../components/BudgetItems';
+import { PlusIcon } from 'lucide-react';
 
 
 const page = () => {
@@ -60,6 +62,7 @@ const page = () => {
                 amount, 
                 selectedEmoji,
             )
+            fetchBudgets()
             const modal = document.getElementById("my_modal_3") as HTMLDialogElement
 
             if (modal) {
@@ -82,8 +85,9 @@ const page = () => {
                 <Notification message={notification} onclose={closeNotification}></Notification>
             )}
 
-            <button className="btn" onClick={() => (document.getElementById('my_modal_3') as HTMLDialogElement).showModal()}>
+            <button className="btn mb-4" onClick={() => (document.getElementById('my_modal_3') as HTMLDialogElement).showModal()}>
                 Nouveau Budget
+                <PlusIcon className="w-4 h-4 ml-2" />
             </button>
             <dialog id="my_modal_3" className="modal">
                 <div className="modal-box">
@@ -133,11 +137,12 @@ const page = () => {
                 </div>
             </dialog>
 
-            <ul className="grid md:grid-cols3 gap-4">
+            <ul className="grid md:grid-cols-3 gap-4">
                 {
                     budgets.map((budget) => (
                        <Link href={""} key={budget.id}>
-                        {budget.name}
+                        {/* {budget.name} */}
+                        <BudgetItems budget={budget} enableHover={1}></BudgetItems> 
                         </Link>
                     ))
                 }
