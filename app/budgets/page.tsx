@@ -42,10 +42,14 @@ const page = () => {
             if (modal) {
                 modal.close()
             }
-            
+            setNotification("Budget ajouté avec succès")
+            setBudgetName("")
+            setBudgetAmount("")
+            setSelectedEmoji("")
+            setShowEmojiPicker(false)
             
         } catch (error) {
-            console.error("Erreur lors de l'ajout du budget:", error)
+            setNotification(`Erreur lors de l'ajout du budget: ${error}`)
         }
     }
 
