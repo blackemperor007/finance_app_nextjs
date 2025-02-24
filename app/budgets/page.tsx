@@ -3,8 +3,10 @@ import React, { useEffect, useState } from 'react';
 import Wrapper from '../components/Wrapper';
 import { useUser } from '@clerk/nextjs';
 import EmojiPicker from 'emoji-picker-react';
-import { addBudget } from '../actions'
+import { addBudget, getBudgetsByUser } from '../actions'
 import Notification from '../components/Notification';
+import { Budget } from '@/type';
+import Link from 'next/link';
 
 
 const page = () => {
@@ -13,6 +15,8 @@ const page = () => {
     const [budgetAmount, setBudgetAmount] = useState<string>("")
     const [selectedEmoji, setSelectedEmoji] = useState<string>("")
     const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false)
+
+    const [budgets, setBudgets] = useState<Budget[]>([])
 
     const [notification, setNotification] = useState<string>("")
     const closeNotification = () => (
@@ -23,6 +27,25 @@ const page = () => {
         setSelectedEmoji(emojiObject.emoji)
         setShowEmojiPicker(false)
     }
+
+   
+
+    const fetchBudgets = async () => {
+        if (user?.primaryEmailAddress?.emailAddress) {
+            try {
+                const userBudgets = await getBudgetsByUser(
+                    user?.primaryEmailAddress?.emailAddress
+                )
+                setBudgets(userBudgets)
+            } catch (error) {
+                console.error("Erreur lors de la récupération des budgets", error)
+            }
+        }
+    }
+
+    useEffect(() => {
+        fetchBudgets()
+    }, [user?.primaryEmailAddress?.emailAddress])
 
     const handleAddBudget = async () => {
         
@@ -109,6 +132,16 @@ const page = () => {
                     </div>
                 </div>
             </dialog>
+
+            <ul className="grid md:grid-cols3 gap-4">
+                {
+                    budgets.map((budget) => (
+                       <Link href={""} key={budget.id}>
+                        {budget.name}
+                        </Link>
+                    ))
+                }
+            </ul>
         </Wrapper>
     )
 }
