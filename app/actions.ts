@@ -220,11 +220,12 @@ export async function getTransactionsByEmailAndPeriod(email: string, period: str
         if (!user) {
             throw new Error("Utilisateur non trouvé")
         }
-
-        const transactions = user.budgets.flatMap(budget => budget.transactions.map((transaction => ({
+        
+        const transactions = user.budgets.flatMap(budget => budget.transactions.map(transaction => ({
             ...transaction,
-            budgetName : budget.name
-        }))))    
+            budgetName : budget.name,
+            budgetId : budget.id
+        })))
 
         return transactions
     } catch (error) {

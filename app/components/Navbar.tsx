@@ -24,7 +24,7 @@ const Navbar = () => {
                             <div className="md:flex hidden items-center gap-4">
                                 <Link href={"/budgets"} className='btn'>Budgets</Link>
                                 <Link href={"/dashboard"} className='btn'>Tableau de bord</Link>
-                                <Link href={"/transaction"} className='btn'>Transactions</Link>
+                                <Link href={"/transactions"} className='btn'>Transactions</Link>
                             </div>
                             <UserButton/>
                         </div>
@@ -32,7 +32,7 @@ const Navbar = () => {
                         <div className="md:hidden flex items-center gap-4">
                                 <Link href={"/budgets"} className='btn btn-sm md:btn-md'>Budgets</Link>
                                 <Link href={"/dashboard"} className='btn mx-4 btn-sm'>Tableau de bord</Link>
-                                <Link href={"/transaction"} className='btn btn-sm'>Transactions</Link>
+                                <Link href={"/transactions"} className='btn btn-sm'>Transactions</Link>
                             </div>
                     </>
                 ) : (
