@@ -1,32 +1,33 @@
 'use server'
 import prisma from '@/lib/prisma'
+import { Transaction , Budget } from "@/type";
 
-export async function checkAndAddUser(email :string | undefined) {
-    if(!email) return
+export async function checkAndAddUser(email: string | undefined) {
+    if (!email) return
     try {
         const existingUser = await prisma.user.findUnique({
-            where : {
+            where: {
                 email
             }
         })
 
         if (!existingUser) {
             await prisma.user.create({
-                data:{email}
+                data: { email }
             })
-        console.log("nouvel utilisateur ajouter dans la base de donnée")
+            console.log("nouvel utilisateur ajouter dans la base de donnée")
         } else {
-        console.log("Utilisateur déjà présent dans la base de donnée")
+            console.log("Utilisateur déjà présent dans la base de donnée")
         }
     } catch (error) {
         console.error("Erreur lors de la vérification de l'utilisateur", error)
     }
 }
 
-export async function addBudget(email :string , name : string , amount : number, selectedEmoji : string) {
+export async function addBudget(email: string, name: string, amount: number, selectedEmoji: string) {
     try {
         const user = await prisma.user.findUnique({
-            where: {email}
+            where: { email }
         })
 
         if (!user) {
@@ -48,10 +49,10 @@ export async function addBudget(email :string , name : string , amount : number,
     }
 }
 
-export async function getBudgetsByUser(email : string) {
+export async function getBudgetsByUser(email: string) {
     try {
         const user = await prisma.user.findUnique({
-            where: {email},
+            where: { email },
             include: {
                 budgets: {
                     include: {
@@ -69,17 +70,17 @@ export async function getBudgetsByUser(email : string) {
         //     where: {userId: user.id}
         // })
         return user.budgets
-        
+
     } catch (error) {
         console.error("Erreur lors de la récupération des budgets", error)
         throw error
     }
 }
 
-export async function getTransactionsByBudgetId(budgetId : string) {
+export async function getTransactionsByBudgetId(budgetId: string) {
     try {
         const budget = await prisma.budget.findUnique({
-            where: {id: budgetId},
+            where: { id: budgetId },
             include: {
                 transactions: true
             }
@@ -91,15 +92,15 @@ export async function getTransactionsByBudgetId(budgetId : string) {
 
         return budget
     } catch (error) {
-       console.error("Erreur lors de la récupération des transactions", error)
-       throw error
+        console.error("Erreur lors de la récupération des transactions", error)
+        throw error
     }
 }
 
-export async function addTransactionBudget(budgetId : string, amount : number, description : string) {
+export async function addTransactionBudget(budgetId: string, amount: number, description: string) {
     try {
         const budget = await prisma.budget.findUnique({
-            where: {id: budgetId},
+            where: { id: budgetId },
             include: {
                 transactions: true
             }
@@ -116,12 +117,12 @@ export async function addTransactionBudget(budgetId : string, amount : number, d
             throw new Error("Le budget est dépassé")
         }
 
-       const newTransaction = await prisma.transaction.create({
+        const newTransaction = await prisma.transaction.create({
             data: {
                 amount,
                 description,
                 emoji: budget.emoji,
-                budget : {
+                budget: {
                     connect: {
                         id: budget.id
                     }
@@ -137,13 +138,13 @@ export async function addTransactionBudget(budgetId : string, amount : number, d
     }
 }
 
-export async function deleteBudget(budgetId : string) {
+export async function deleteBudget(budgetId: string) {
     try {
         await prisma.transaction.deleteMany({
-            where: {budgetId}
+            where: { budgetId }
         })
         await prisma.budget.delete({
-            where: {id: budgetId}
+            where: { id: budgetId }
         })
     } catch (error) {
         console.error("Erreur lors de la suppression du budget", error)
@@ -154,7 +155,7 @@ export async function deleteBudget(budgetId : string) {
 export async function deleteTransaction(transactionId: string) {
     try {
         const transaction = await prisma.transaction.findUnique({
-            where: {id: transactionId}
+            where: { id: transactionId }
         })
 
         if (!transaction) {
@@ -162,10 +163,71 @@ export async function deleteTransaction(transactionId: string) {
         }
 
         await prisma.transaction.delete({
-            where: {id: transactionId}
+            where: { id: transactionId }
         })
     } catch (error) {
         console.error("Erreur lors de la suppression de la transaction", error)
         throw error
+    }
+}
+
+export async function getTransactionsByEmailAndPeriod(email: string, period: string) {
+    try {
+        const now = new Date()
+        let dateLimit
+
+        switch (period) {
+            case 'last30':
+                dateLimit = new Date(now)
+                dateLimit.setDate(now.getDate() - 30)
+                break
+            case 'last90':
+                dateLimit = new Date(now)
+                dateLimit.setDate(now.getDate() - 90)
+                break
+            case 'last7':
+                dateLimit = new Date(now)
+                dateLimit.setDate(now.getDate() - 7)
+                break
+            case 'last365':
+                dateLimit = new Date(now)
+                dateLimit.setDate(now.getFullYear() - 1)
+                break
+            default:
+                throw new Error("Période non valide")
+        }
+
+        const user = await prisma.user.findUnique({
+            where: { email },
+            include: {
+                budgets: {
+                    include: {
+                        transactions: {
+                            where: {
+                                createdAt: {
+                                    gte: dateLimit
+                                }
+                            },
+                            orderBy: {
+                                createdAt: 'desc'
+                            }
+                        }
+                    }
+                }
+            }
+        })
+
+        if (!user) {
+            throw new Error("Utilisateur non trouvé")
+        }
+
+        const transactions = user.budgets.flatMap(budget => budget.transactions.map((transaction => ({
+            ...transaction,
+            budgetName : budget.name
+        }))))    
+
+        return transactions
+    } catch (error) {
+        console.error('Erreur lors de la récupération des transactions')
     }
 }
