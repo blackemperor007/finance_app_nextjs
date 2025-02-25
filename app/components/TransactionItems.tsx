@@ -43,6 +43,9 @@ const TransactionItems : React.FC<TransactionItemProps> = ({transaction}) => {
         </div>
         <div className="hidden md:flex">
             <Link href={`/manage/${transaction.budgetId}`} className="btn btn-sm btn-outline btn-ghost">
+                <span className="text-xs">
+                    Voir Plus
+                </span>
             </Link>
         </div>
     </li>

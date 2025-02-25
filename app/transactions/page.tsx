@@ -31,9 +31,21 @@ const page = () => {
     useEffect(() => {
         fetchTransactions("last30")
     }, [user?.primaryEmailAddress?.emailAddress])
+    
 
     return (
         <Wrapper>
+
+            <div className="flex justify-end mb-5">
+                <select name="" id="" className="input-bordered input-md input" defaultValue="last30" onChange={(e) => fetchTransactions(e.target.value)}>
+                    <option value="last7">Derniers 7 Jours</option>
+                    <option value="last30">Derniers 30 Jours</option>
+                    <option value="last90">Derniers 90 Jours</option>
+                    <option value="last365">Derniers 365 Jours</option>
+                </select>
+            </div>
+
+
             <div className="overflow-x-auto w-full bg-base-200/35 p-5 rounded-xl">
                 {
                     loading ? (
