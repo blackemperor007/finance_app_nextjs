@@ -1,11 +1,12 @@
 "use client"
-import { addTransactionBudget, getTransactionsByBudgetId } from '@/app/actions'
+import { addTransactionBudget, deleteBudget, deleteTransaction, getTransactionsByBudgetId } from '@/app/actions'
 import BudgetItems from '@/app/components/BudgetItems'
 import Wrapper from '@/app/components/Wrapper'
 import { Budget, Transaction } from '@/type'
 import React, { useEffect, useState } from 'react'
 import Notification from '@/app/components/Notification'
 import { SendIcon, TrashIcon } from 'lucide-react'
+import { redirect } from 'next/navigation'
 
 const page = ({ params }: { params: Promise<{ budgetId: string }> }) => {
 
@@ -61,6 +62,36 @@ const page = ({ params }: { params: Promise<{ budgetId: string }> }) => {
       setNotification("Erreur lors de l'ajout de la transaction")
     }
   }
+
+  const handleDeleteBudget = async () => {
+    const confirmed = window.confirm("Etes-vous sûr de vouloir supprimer ce budget et toutes ses transactions associées ?")
+
+    if (confirmed) {
+      try {
+      await deleteBudget(budgetId)
+      } catch (error) {
+        console.error("Erreue lors de la suppression du budget : ", error);
+        
+      }
+      redirect("/budgets")
+    }
+  }
+
+  const handleDeleteTransaction = async (transactionId : string) => {
+    const confirmed = window.confirm("Etes-vous sûr de vouloir supprimer cette transaction ?")
+
+    if (confirmed) {
+      try {
+      await deleteTransaction(transactionId)
+      fetchBudgetData(budgetId)
+      setNotification("Dépense supprimée")
+      } catch (error) {
+        console.error("Erreue lors de la suppression du budget : ", error);
+        
+      }
+      redirect("/budgets")
+    }
+  }
   return (
     <Wrapper>
       {notification && (
@@ -70,7 +101,11 @@ const page = ({ params }: { params: Promise<{ budgetId: string }> }) => {
         <div className="flex md:flex-row flex-col">
           <div className="md:w-1/3">
             <BudgetItems budget={budget}></BudgetItems>
-            <button className='btn mt-4'>Ajouter une transaction</button>
+            <button 
+            onClick={() => handleDeleteBudget()}
+            className='btn mt-4'
+            >
+              Supprimer le budget</button>
             <div className="space-y-4 flex flex-col mt-4">
               <input
                 type="text"
@@ -129,7 +164,8 @@ const page = ({ params }: { params: Promise<{ budgetId: string }> }) => {
                         second: "2-digit"
                       })}</td>
                       <td>
-                        <button className='btn btn-accent btn-xs md:btn-sm'>
+                        <button className='btn btn-accent btn-xs md:btn-sm'
+                        onClick={() => handleDeleteTransaction(transaction.id)}>
                           <TrashIcon className='w-4 h-4' />
                           </button>
                       </td>
