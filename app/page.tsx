@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { UserButton } from '@clerk/nextjs'
 import Navbar from "./components/Navbar";
+import budgets from "./data";
+import BudgetItems from "./components/BudgetItems";
 
 export default function Home() {
   return (
@@ -23,6 +25,16 @@ export default function Home() {
               Inscription
             </Link>
           </div>
+
+          <ul className="grid md:grid-cols-3 gap-4 md:min-w-[1200px] mt-6">
+                {
+                    budgets.map((budget) => (
+                       <Link href={""} key={budget.id}>
+                        <BudgetItems budget={budget} enableHover={1}></BudgetItems> 
+                        </Link>
+                    ))
+                }
+            </ul>
         </div>
       </div>
     </div>
