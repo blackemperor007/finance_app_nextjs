@@ -3,8 +3,8 @@ import { useUser } from '@clerk/nextjs'
 import React, { useEffect, useState } from 'react'
 import { deleteBudget, getLastBudgets, getLastTransactions, getReachedBudgets, getTotalTransactionAmount, getTotalTransactionCount, getUserBudgetData } from '../actions'
 import Wrapper from '../components/Wrapper'
-import { BarChart, CircleDollarSign, Link, LandPlot, PiggyBank } from 'lucide-react'
-import { Bar, CartesianGrid, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
+import { CircleDollarSign, Link, LandPlot, PiggyBank } from 'lucide-react'
+import { Bar, BarChart, CartesianGrid, ComposedChart, ResponsiveContainer, Scatter, Tooltip, XAxis, YAxis, ZAxis } from 'recharts'
 import BudgetItems from '../components/BudgetItems'
 import { Budget, Transaction } from '@/type'
 import TransactionItems from '../components/TransactionItems'
@@ -34,7 +34,7 @@ const page = () => {
                 const lastBudgets = await getLastBudgets(email)
                 setTotalAmount(amount)
                 setTotalCount(count)
-                // setReachedBudgetsRatio(reachedBudgets)
+                setReachedBudgetsRatio(reachedBudgets)
                 setBudgetData(budgetsData)
                 setTransactions(lastTransactions)
                 setBudgets(lastBudgets)
@@ -89,7 +89,7 @@ const page = () => {
                                     Budget atteints
                                 </span>
                                 <span className='text-2xl font-bold text-accent'>
-                                {reachedBudgetsRatio || 'N/A'}
+                                    {reachedBudgetsRatio || 'N/A'}
                                 </span>
                             </div>
 
@@ -101,11 +101,11 @@ const page = () => {
                         <div className='roundex-xl md:w-2/3'>
                             <div className='border-2 border-base-300 p-5 rounded-xl'>
                                 <h3 className='text-lg font-semibold mb-3'>
-                                    Statistiques ( en xcfa ) 
+                                    Statistiques ( en xcfa )
                                 </h3>
-                                
-                                {/* <ResponsiveContainer height={250} width="100%">
-                                    <BarChart width={730} height={250} data={data}>
+
+                                <ResponsiveContainer height={250} width="100%">
+                                    <BarChart width={730} height={250} data={budgetData}>
                                         <CartesianGrid vertical={false} strokeDasharray="3 3" />
                                         <XAxis dataKey="budgetName" />
 
@@ -124,7 +124,9 @@ const page = () => {
                                             radius={[10, 10, 0, 0]}
                                         />
                                     </BarChart>
-                                </ResponsiveContainer> */}
+                                    
+
+                                </ResponsiveContainer>
                             </div>
 
                             <div className='mt-4 border-2 border-base-300 p-5 rounded-xl'>
@@ -150,12 +152,12 @@ const page = () => {
                                 {budgets.map((budget) => (
                                     <Link href={`/manage/${budget.id}`} key={budget.id}>
                                         <BudgetItems budget={budget} enableHover={1}></BudgetItems>
-                                        
+
                                     </Link>
                                 ))}
                             </ul>
                         </div>
-                    </div> 
+                    </div>
 
                 </div>
             )}
