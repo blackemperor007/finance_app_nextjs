@@ -124,7 +124,7 @@ const page = () => {
                                             radius={[10, 10, 0, 0]}
                                         />
                                     </BarChart>
-                                    
+
 
                                 </ResponsiveContainer>
                             </div>
@@ -133,14 +133,11 @@ const page = () => {
                                 <h3 className='text-lg font-semibold  mb-3'>
                                     Derniers Transacttions
                                 </h3>
-                                <ul className='divide-y divide-base-300'>
-                                    {transactions.map((transaction) => (
-                                        <TransactionItems
-                                            key={transaction.id}
-                                            transaction={transaction}>
-                                        </TransactionItems>
-                                    ))}
-                                </ul>
+                                <ul className="divide-y divide-base-300">
+                            {transactions.map((transaction) => (
+                                <TransactionItems transaction={transaction} key={transaction.id}></TransactionItems>
+                            ))}
+                        </ul>
                             </div>
                         </div>
 
