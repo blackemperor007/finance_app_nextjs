@@ -191,7 +191,7 @@ export async function getTransactionsByEmailAndPeriod(email: string, period: str
                 break
             case 'last365':
                 dateLimit = new Date(now)
-                dateLimit.setDate(now.getFullYear() - 1)
+                dateLimit.setFullYear(now.getFullYear() - 1)
                 break
             default:
                 throw new Error("Période non valide")
@@ -230,5 +230,35 @@ export async function getTransactionsByEmailAndPeriod(email: string, period: str
         return transactions
     } catch (error) {
         console.error('Erreur lors de la récupération des transactions')
+    }
+}
+
+// dashboard.ts
+export async function getTotalTransactionAmount(email: string)  {
+    try {
+        const user = await prisma.user.findUnique({
+            where: { email },
+            include: {
+                budgets: {
+                    include: {
+                        transactions: true
+                    }
+                }
+            }
+        })
+
+        if (!user) {
+            throw new Error("Utilisateur non trouvé")
+        }
+
+        const totalAmount = user.budgets.reduce((sum, budget) => {
+            const totalTransactionAmount = budget.transactions.reduce((sum, transaction) => sum + transaction.amount, 0)
+            return sum + totalTransactionAmount
+        }, 0)
+
+        return totalAmount
+    } catch (error) {
+        console.error("Erreur lors de la récupération du montant total", error)
+        throw error
     }
 }
