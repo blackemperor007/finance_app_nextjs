@@ -19,7 +19,7 @@ const page = () => {
             try {
                 const transactionsData = await getTransactionsByEmailAndPeriod(user?.primaryEmailAddress?.emailAddress, period)
                 if (transactionsData) {
-                    setTransactions(transactionsData)
+                     setTransactions(transactionsData)
                 }
                 setLoading(false)
             } catch (error) {
