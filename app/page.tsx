@@ -1,6 +1,4 @@
-import Image from "next/image";
 import Link from "next/link";
-import { UserButton } from '@clerk/nextjs'
 import Navbar from "./components/Navbar";
 import budgets from "./data";
 import BudgetItems from "./components/BudgetItems";

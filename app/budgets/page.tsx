@@ -11,7 +11,7 @@ import BudgetItems from '../components/BudgetItems';
 import { PlusIcon } from 'lucide-react';
 
 
-const page = () => {
+const Page = () => {
     const { user } = useUser()
     const [budgetName, setBudgetName] = useState<string>("")
     const [budgetAmount, setBudgetAmount] = useState<string>("")
@@ -150,4 +150,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page

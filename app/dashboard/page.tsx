@@ -10,7 +10,7 @@ import { Budget, Transaction } from '@/type'
 import TransactionItems from '../components/TransactionItems'
 import Link from 'next/link'
 
-const page = () => {
+const Page = () => {
 
     const { user } = useUser();
     const [totalAmount, setTotalAmount] = useState<number | null>(null)
@@ -163,4 +163,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page
