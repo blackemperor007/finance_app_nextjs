@@ -6,7 +6,7 @@ import { getTransactionsByEmailAndPeriod } from '../actions'
 import Wrapper from '../components/Wrapper'
 import TransactionItems from '../components/TransactionItems'
 
-const page = () => {
+const Page = () => {
 
     const { user } = useUser()
     const [transactions, setTransactions] = useState<Transaction[]>([])
@@ -71,4 +71,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page

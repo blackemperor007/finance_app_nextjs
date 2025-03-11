@@ -1,10 +1,10 @@
 "use client"
 import { useUser } from '@clerk/nextjs'
 import React, { useEffect, useState } from 'react'
-import { deleteBudget, getLastBudgets, getLastTransactions, getReachedBudgets, getTotalTransactionAmount, getTotalTransactionCount, getUserBudgetData } from '../actions'
+import { getLastBudgets, getLastTransactions, getReachedBudgets, getTotalTransactionAmount, getTotalTransactionCount, getUserBudgetData } from '../actions'
 import Wrapper from '../components/Wrapper'
 import { CircleDollarSign, LandPlot, PiggyBank } from 'lucide-react'
-import { Bar, BarChart, CartesianGrid, ComposedChart, ResponsiveContainer, Scatter, Tooltip, XAxis, YAxis, ZAxis } from 'recharts'
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
 import BudgetItems from '../components/BudgetItems'
 import { Budget, Transaction } from '@/type'
 import TransactionItems from '../components/TransactionItems'

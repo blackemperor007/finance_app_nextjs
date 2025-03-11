@@ -41,6 +41,7 @@ const Page = () => {
                 setBudgets(userBudgets)
             } catch (error) {
                 console.error("Erreur lors de la récupération des budgets", error)
+                throw error
             }
         }
     }

@@ -55,12 +55,12 @@ const Page = ({ params }: { params: Promise<{ budgetId: string }> }) => {
 
       const newTransaction = await addTransactionBudget(budgetId, amountNumber, description)
       setNotification("Transaction ajoutée avec succès")
-      setDescription("")
-      setAmount("")
       fetchBudgetData(budgetId)
+      setDescription('')
+      setAmount('')
 
     } catch (error) {
-      setNotification("Erreur lors de l'ajout de la transaction")
+      setNotification("Vous avez dépassé votre budget")
     }
   }
 
