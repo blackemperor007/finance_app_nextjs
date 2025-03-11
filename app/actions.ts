@@ -310,6 +310,7 @@ export async function getReachedBudgets(email: string) {
             return `${reachedBudgets}/${totalBudgets}`
     } catch (error) {
         console.error("Erreur lors de la récuppération des données")
+        throw error
     }
 }
 
