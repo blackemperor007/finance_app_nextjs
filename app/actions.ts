@@ -64,10 +64,6 @@ export async function getBudgetsByUser(email: string) {
         if (!user) {
             throw new Error("Utilisateur non trouvé")
         }
-
-        // const budgets = await prisma.budget.findMany({
-        //     where: {userId: user.id}
-        // })
         return user.budgets
 
     } catch (error) {
