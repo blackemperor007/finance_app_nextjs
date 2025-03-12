@@ -1,17 +1,18 @@
 import Navbar from "./Navbar"
+
 type WrapperProps = {
-    children: React.ReactNode
+    children : React.ReactNode
 }
 
-const Wrapper = ({ children }: WrapperProps) => {
-    return (
-        <div>
-            <Navbar />
-            <div className="px-5 md:px-[10%] mt-10 mb-10">
-                {children}
-            </div>
+const Wrapper = ({children} : WrapperProps) => {
+  return (
+    <div>
+        <Navbar/>
+        <div className="px-5 md:px-[10%] mt-10 mb-10">
+            {children}
         </div>
-    )
+    </div>
+  )
 }
 
 export default Wrapper

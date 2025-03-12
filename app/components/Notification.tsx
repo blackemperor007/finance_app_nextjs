@@ -1,30 +1,30 @@
-import React, { useEffect } from 'react'
-import { InfoIcon } from 'lucide-react'
+import { Info } from "lucide-react";
+import React, { useEffect } from "react";
+
 interface NotificationProps {
-    message: string
-    onclose: () => void ;
+  message: string;
+  onclose: () => void;
 }
 
-const Notification : React.FC<NotificationProps> = ({ message, onclose }) => {
+const Notification: React.FC<NotificationProps> = ({ message, onclose }) => {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            onclose()
+           onclose()
         }, 3000)
-
-        return () => clearTimeout(timer)
-    }, [onclose])
+        return  () => clearTimeout(timer)
+    } , [onclose])
 
   return (
-    <div className="toast toast-bottom toast-left ">
-  <div className="alert p-2 text-sm shadow-lg">
-    <span className='flex items-center'>
-        <InfoIcon className='w-4 h-4 mr-2 font-bold text-accent' />
-        {message}
-    </span>
-  </div>
-</div>
-  )
-}
+    <div className="toast toast-bottom toast-left">
+      <div className="alert p-2 text-sm shadow-lg">
+        <span className="flex items-center">
+          <Info className="w-4 mr-2 font-bold text-accent"/>
+             {message}
+        </span>
+      </div>
+    </div>
+  );
+};
 
-export default Notification
+export default Notification;

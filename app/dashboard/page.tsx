@@ -1,19 +1,17 @@
 "use client"
-import { useUser } from '@clerk/nextjs'
-import React, { useCallback, useEffect, useState } from 'react'
-import { getLastBudgets, getLastTransactions, getReachedBudgets, getTotalTransactionAmount, getTotalTransactionCount, getUserBudgetData } from '../actions'
-import Wrapper from '../components/Wrapper'
-import { CircleDollarSign, LandPlot, PiggyBank } from 'lucide-react'
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
-import BudgetItems from '../components/BudgetItems'
-import { Budget, Transaction } from '@/type'
-import TransactionItems from '../components/TransactionItems'
-import Link from 'next/link'
 
+import { useUser } from '@clerk/nextjs';
+import { useEffect, useState } from 'react'
+import { getLastBudgets, getLastTransactions, getReachedBudgets, getTotalTransactionAmount, getTotalTransactionCount, getUserBudgetData } from '../actions';
+import Wrapper from '../components/Wrapper';
+import { CircleDollarSign, Landmark, PiggyBank } from 'lucide-react';
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { Budget, Transaction } from '@/type';
+import BudgetItem from '../components/BudgetItem';
+import Link from 'next/link';
+import TransactionItem from '../components/TransactionItem';
 
-
-const Page = () => {
-
+const page = () => {
     const { user } = useUser();
     const [totalAmount, setTotalAmount] = useState<number | null>(null)
     const [isLoading, setIsLoading] = useState(true);
@@ -24,14 +22,14 @@ const Page = () => {
     const [budgets, setBudgets] = useState<Budget[]>([]);
 
 
-    const fetchData = useCallback(async () => {
+    const fetchData = async () => {
         setIsLoading(true)
         try {
             const email = user?.primaryEmailAddress?.emailAddress as string
             if (email) {
                 const amount = await getTotalTransactionAmount(email)
                 const count = await getTotalTransactionCount(email)
-                const reachedBudgets = await getReachedBudgets(email)   
+                const reachedBudgets = await getReachedBudgets(email)
                 const budgetsData = await getUserBudgetData(email)
                 const lastTransactions = await getLastTransactions(email)
                 const lastBudgets = await getLastBudgets(email)
@@ -42,25 +40,27 @@ const Page = () => {
                 setTransactions(lastTransactions)
                 setBudgets(lastBudgets)
                 setIsLoading(false)
+
             }
         } catch (error) {
-            console.error("Erreur lors de la récupération des budgets", error)
+            console.error("Erreur lors de la récupération des données:", error);
         }
-    }, [user?.primaryEmailAddress?.emailAddress])
+    }
 
     useEffect(() => {
         fetchData()
-    }, [fetchData])
+    }, [user])
+
     return (
-        <Wrapper>
+        <Wrapper >
             {isLoading ? (
-                <div className="flex justify-center items-center">
+                <div className='flex justify-center items-center'>
                     <span className="loading loading-spinner loading-md"></span>
                 </div>
             ) : (
                 <div>
                     <div className='grid md:grid-cols-3 gap-4'>
-                        <div className='border-2 border-base-200 p-5 flex justify-between items-center rounded-xl '>
+                        <div className='border-2 border-base-300 p-5 flex justify-between items-center rounded-xl '>
                             <div className='flex flex-col'>
                                 <span className='text-gray-500 text-sm'>
                                     Total des transactions
@@ -73,7 +73,7 @@ const Page = () => {
                             <CircleDollarSign className='bg-accent w-9 h-9 rounded-full p-1 text-white' />
                         </div>
 
-                        <div className='border-2 border-base-200 p-5 flex justify-between items-center rounded-xl '>
+                        <div className='border-2 border-base-300 p-5 flex justify-between items-center rounded-xl '>
                             <div className='flex flex-col'>
                                 <span className='text-gray-500 text-sm'>
                                     Nombre de transactions
@@ -86,17 +86,17 @@ const Page = () => {
                             <PiggyBank className='bg-accent w-9 h-9 rounded-full p-1 text-white' />
                         </div>
 
-                        <div className='border-2 border-base-200 p-5 flex justify-between items-center rounded-xl '>
+                        <div className='border-2 border-base-300 p-5 flex justify-between items-center rounded-xl '>
                             <div className='flex flex-col'>
                                 <span className='text-gray-500 text-sm'>
-                                    Budget atteints
+                                    Budgets atteints
                                 </span>
                                 <span className='text-2xl font-bold text-accent'>
                                     {reachedBudgetsRatio || 'N/A'}
                                 </span>
                             </div>
 
-                            <LandPlot className='bg-accent w-9 h-9 rounded-full p-1 text-white' />
+                            <Landmark className='bg-accent w-9 h-9 rounded-full p-1 text-white' />
                         </div>
                     </div>
 
@@ -104,9 +104,8 @@ const Page = () => {
                         <div className='roundex-xl md:w-2/3'>
                             <div className='border-2 border-base-300 p-5 rounded-xl'>
                                 <h3 className='text-lg font-semibold mb-3'>
-                                    Statistiques ( en xcfa )
+                                    Statistiques ( en € )
                                 </h3>
-
                                 <ResponsiveContainer height={250} width="100%">
                                     <BarChart width={730} height={250} data={budgetData}>
                                         <CartesianGrid vertical={false} strokeDasharray="3 3" />
@@ -127,8 +126,6 @@ const Page = () => {
                                             radius={[10, 10, 0, 0]}
                                         />
                                     </BarChart>
-
-
                                 </ResponsiveContainer>
                             </div>
 
@@ -136,11 +133,14 @@ const Page = () => {
                                 <h3 className='text-lg font-semibold  mb-3'>
                                     Derniers Transacttions
                                 </h3>
-                                <ul className="divide-y divide-base-300">
-                            {transactions.map((transaction) => (
-                                <TransactionItems transaction={transaction} key={transaction.id}></TransactionItems>
-                            ))}
-                        </ul>
+                                <ul className='divide-y divide-base-300'>
+                                    {transactions.map((transaction) => (
+                                        <TransactionItem
+                                            key={transaction.id}
+                                            transaction={transaction}>
+                                        </TransactionItem>
+                                    ))}
+                                </ul>
                             </div>
                         </div>
 
@@ -151,18 +151,17 @@ const Page = () => {
                             <ul className="grid grid-cols-1 gap-4">
                                 {budgets.map((budget) => (
                                     <Link href={`/manage/${budget.id}`} key={budget.id}>
-                                        <BudgetItems budget={budget} enableHover={1}></BudgetItems>
+                                        <BudgetItem budget={budget} enableHover={1}></BudgetItem>
                                     </Link>
                                 ))}
                             </ul>
                         </div>
                     </div>
-
                 </div>
-            )}
-
-        </Wrapper>
+            )
+            }
+        </Wrapper >
     )
 }
 
-export default Page
+export default page
