@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Wrapper from '../components/Wrapper';
 import { useUser } from '@clerk/nextjs';
 import EmojiPicker from 'emoji-picker-react';
@@ -32,51 +32,56 @@ const Page = () => {
 
    
 
-    const fetchBudgets = async () => {
-        if (user?.primaryEmailAddress?.emailAddress) {
-            try {
-                const userBudgets = await getBudgetsByUser(
-                    user?.primaryEmailAddress?.emailAddress
-                )
-                setBudgets(userBudgets)
-            } catch (error) {
-                console.error("Erreur lors de la récupération des budgets", error)
-                throw error
-            }
+    const fetchBudgets = useCallback( async () => {
+        if(user?.primaryEmailAddress?.emailAddress){
+          try {
+            const userBudgets = await  getBudgetsByUser(user?.primaryEmailAddress?.emailAddress)
+            setBudgets(userBudgets)
+          } catch (error) {
+            setNotification(`Erreur lors de la récupération des budgets: ${error}`);
+          }
         }
-    }
+      }, [user?.primaryEmailAddress?.emailAddress])
 
     useEffect(() => {
         fetchBudgets()
-    }, [user?.primaryEmailAddress?.emailAddress])
+    }, [fetchBudgets])
 
     const handleAddBudget = async () => {
-        
         try {
-            const amount = parseFloat(budgetAmount)
-            if (isNaN(amount) || amount <= 0) {
-                throw new Error("Veuillez entrer une somme valide")
+            if (!budgetName.trim() || !budgetAmount.trim()) {
+                throw new Error("Veuillez remplir tous les champs");
             }
+    
+            const amount = parseFloat(budgetAmount);
+            if (isNaN(amount) || amount <= 0) {
+                throw new Error("Veuillez entrer une somme valide");
+            }
+    
+            if (!user?.primaryEmailAddress?.emailAddress) {
+                throw new Error("Utilisateur non identifié");
+            }
+    
             await addBudget(
-                user?.primaryEmailAddress?.emailAddress as string,
+                user.primaryEmailAddress.emailAddress,
                 budgetName, 
                 amount, 
-                selectedEmoji,
-            )
-            fetchBudgets()
-            const modal = document.getElementById("my_modal_3") as HTMLDialogElement
-
-            if (modal) {
-                modal.close()
-            }
-            setNotification("Budget ajouté avec succès")
-            setBudgetName("")
-            setBudgetAmount("")
-            setSelectedEmoji("")
-            setShowEmojiPicker(false)
+                selectedEmoji
+            );
+    
+            fetchBudgets(); // Rafraîchir la liste
+    
+            const modal = document.getElementById("my_modal_3") as HTMLDialogElement;
+            if (modal) modal.close();
+    
+            setNotification("Budget ajouté avec succès");
+            setBudgetName("");
+            setBudgetAmount("");
+            setSelectedEmoji("");
+            setShowEmojiPicker(false);
             
         } catch (error) {
-            setNotification(`Erreur lors de l'ajout du budget: ${error}`)
+            setNotification(`Erreur lors de l'ajout du budget: ${error}`);
         }
     }
 
@@ -96,7 +101,7 @@ const Page = () => {
                         <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
                     <h3 className="font-bold text-lg">
-                        Création d'un budget
+                        Création d &apos un budget
                     </h3>
                     <p className="py-4">
                         Permet de contrôler ses dépenses facilement
@@ -141,9 +146,9 @@ const Page = () => {
             <ul className="grid md:grid-cols-3 gap-4">
                 {
                     budgets.map((budget) => (
-                       <Link href={`/manage/${budget.id}`} key={budget.id}>
-                        <BudgetItems budget={budget} enableHover={1}></BudgetItems> 
-                        </Link>
+                    <Link href={`/manage/${budget.id}`} key={budget.id}>
+                        <BudgetItems budget={budget} enableHover={1}/> 
+                    </Link>
                     ))
                 }
             </ul>

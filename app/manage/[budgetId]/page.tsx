@@ -1,5 +1,5 @@
 "use client"
-import { addTransactionBudget, deleteBudget, deleteTransaction, getTransactionsByBudgetId } from '@/app/actions'
+import { deleteBudget, deleteTransaction, getTransactionsByBudgetId } from '@/app/actions'
 import BudgetItems from '@/app/components/BudgetItems'
 import Wrapper from '@/app/components/Wrapper'
 import { Budget} from '@/type'
@@ -53,7 +53,7 @@ const Page = ({ params }: { params: Promise<{ budgetId: string }> }) => {
         throw new Error("Le montant doit être un nombre valide et supérieur à 0")
       }
 
-      const newTransaction = await addTransactionBudget(budgetId, amountNumber, description)
+      // const newTransaction = await addTransactionBudget(budgetId, amountNumber, description)
       setNotification("Transaction ajoutée avec succès")
       fetchBudgetData(budgetId)
       setDescription('')

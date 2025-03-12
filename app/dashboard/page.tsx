@@ -1,6 +1,6 @@
 "use client"
 import { useUser } from '@clerk/nextjs'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { getLastBudgets, getLastTransactions, getReachedBudgets, getTotalTransactionAmount, getTotalTransactionCount, getUserBudgetData } from '../actions'
 import Wrapper from '../components/Wrapper'
 import { CircleDollarSign, LandPlot, PiggyBank } from 'lucide-react'
@@ -9,6 +9,8 @@ import BudgetItems from '../components/BudgetItems'
 import { Budget, Transaction } from '@/type'
 import TransactionItems from '../components/TransactionItems'
 import Link from 'next/link'
+
+
 
 const Page = () => {
 
@@ -22,14 +24,14 @@ const Page = () => {
     const [budgets, setBudgets] = useState<Budget[]>([]);
 
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         setIsLoading(true)
         try {
             const email = user?.primaryEmailAddress?.emailAddress as string
             if (email) {
                 const amount = await getTotalTransactionAmount(email)
                 const count = await getTotalTransactionCount(email)
-                const reachedBudgets = await getReachedBudgets(email)
+                const reachedBudgets = await getReachedBudgets(email)   
                 const budgetsData = await getUserBudgetData(email)
                 const lastTransactions = await getLastTransactions(email)
                 const lastBudgets = await getLastBudgets(email)
@@ -44,11 +46,11 @@ const Page = () => {
         } catch (error) {
             console.error("Erreur lors de la récupération des budgets", error)
         }
-    }
+    }, [user?.primaryEmailAddress?.emailAddress])
 
     useEffect(() => {
         fetchData()
-    }, [user])
+    }, [fetchData])
     return (
         <Wrapper>
             {isLoading ? (

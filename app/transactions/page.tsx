@@ -1,7 +1,7 @@
 "use client"
 import { Transaction } from '@/type'
 import { useUser } from '@clerk/nextjs'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { getTransactionsByEmailAndPeriod } from '../actions'
 import Wrapper from '../components/Wrapper'
 import TransactionItems from '../components/TransactionItems'
@@ -13,7 +13,7 @@ const Page = () => {
     const [loading, setLoading] = useState<boolean>(false)
 
 
-    const fetchTransactions = async (period: string) => {
+    const fetchTransactions = useCallback(async (period: string) => {
         if (user?.primaryEmailAddress?.emailAddress) {
             setLoading(true)
             try {
@@ -26,11 +26,11 @@ const Page = () => {
                 console.error("Erreur lors de la récupération des transactions", error)
             }
         }
-    }
+    }, [user?.primaryEmailAddress?.emailAddress])
 
     useEffect(() => {
         fetchTransactions("last30")
-    }, [user?.primaryEmailAddress?.emailAddress])
+    }, [fetchTransactions])
     
 
     return (
